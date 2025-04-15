@@ -1,22 +1,16 @@
-// Event tracking for Q2
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize image hover details
     initImageHoverDetails();
     
-    // Add fade-in class to all sections
     document.querySelectorAll('.section').forEach(section => {
         section.classList.add('fade-in');
     });
     
-    // Initialize section visibility detection
     initSectionObserver();
     
-    // Track all click events
     document.addEventListener('click', function(event) {
         logEvent('click', event.target);
     });
 
-    // Track page views for specific elements
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -24,32 +18,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }, {
-        threshold: 0.5 // Element is considered viewed when 50% visible
+        threshold: 0.5
     });
 
-    // Observe all sections and important elements
     document.querySelectorAll('section, img, a, button').forEach(element => {
         observer.observe(element);
     });
 
-    // Function to log events to console
     function logEvent(eventType, element) {
         const timestamp = new Date().toISOString();
         let elementType = element.tagName.toLowerCase();
         
-        // Add additional context based on element type
         if (element.id) {
             elementType += `#${element.id}`;
         } else if (element.className) {
             elementType += `.${element.className.split(' ')[0]}`;
         }
         
-        // For images, add alt text
         if (element.tagName === 'IMG' && element.alt) {
             elementType += ` (${element.alt})`;
         }
         
-        // For links, add href
         if (element.tagName === 'A' && element.href) {
             elementType += ` (${element.href})`;
         }
@@ -57,36 +46,26 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`${timestamp}, ${eventType}, ${elementType}`);
     }
 
-    // Function to initialize section visibility detection
     function initSectionObserver() {
         const options = {
-            root: null, // use the viewport
+            root: null,
             rootMargin: '0px',
-            threshold: 0.15 // trigger when 15% of the element is visible
+            threshold: 0.15
         };
 
         const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Add visible class to trigger animations
                     entry.target.classList.add('visible');
-                    // Optionally remove observer after animation is triggered
-                    // sectionObserver.unobserve(entry.target);
-                } else {
-                    // Optional: remove the visible class when section is not in view
-                    // Uncomment this if you want animations to replay when scrolling back
-                    // entry.target.classList.remove('visible');
                 }
             });
         }, options);
 
-        // Observe all sections
         document.querySelectorAll('.section').forEach(section => {
             sectionObserver.observe(section);
         });
     }
 
-    // Function to initialize the image hover details
     function initImageHoverDetails() {
         const birthplaceImages = document.querySelectorAll('.birthplace-img');
         
@@ -96,17 +75,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const titleElement = detailsElement.querySelector('h4');
             const descriptionElement = detailsElement.querySelector('p');
             
-            // Get the data attributes from the image
             const title = img.getAttribute('data-title');
             const description = img.getAttribute('data-description');
             
-            // Set the content of the details elements
             titleElement.textContent = title;
             descriptionElement.textContent = description;
         });
     }
 
-    // Add smooth scrolling for navigation links
     document.querySelectorAll('nav a').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -115,17 +91,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetElement = document.querySelector(targetId);
             
             if (targetElement) {
-                // Add animation class to highlight the section when navigating to it
                 targetElement.classList.remove('visible');
                 
-                // Small delay to ensure the class removal is processed
                 setTimeout(() => {
                     window.scrollTo({
-                        top: targetElement.offsetTop - 80, // Account for header height
+                        top: targetElement.offsetTop - 80,
                         behavior: 'smooth'
                     });
                     
-                    // Re-add the visible class after scrolling
                     setTimeout(() => {
                         targetElement.classList.add('visible');
                     }, 400);
@@ -134,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Text analysis for Q3
     const analyzeBtn = document.getElementById('analyze-btn');
     if (analyzeBtn) {
         analyzeBtn.addEventListener('click', analyzeText);
@@ -143,13 +115,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function analyzeText() {
         const text = document.getElementById('text-input').value;
         
-        // Task 1: Calculate and display basic stats
         displayBasicStats(text);
         
-        // Task 2: Count pronouns
         countPronounsPrepositionsArticles(text);
         
-        // Add animation class to analysis results
         document.querySelector('.analysis-results').classList.add('visible');
     }
 
@@ -172,10 +141,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function countPronounsPrepositionsArticles(text) {
-        // Lowercase the text and tokenize
         const words = text.toLowerCase().match(/\b\w+\b/g) || [];
         
-        // Define lists of pronouns, prepositions, and indefinite articles
         const pronouns = [
             'i', 'me', 'my', 'mine', 'myself',
             'you', 'your', 'yours', 'yourself',
@@ -192,21 +159,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const prepositions = [
             'about', 'above', 'across', 'after', 'against', 'along', 'amid', 'among',
             'around', 'at', 'before', 'behind', 'below', 'beneath', 'beside', 'between',
-            'beyond', 'by', 'despite', 'down', 'during', 
-            'except', 'for', 'from', 'in', 'inside', 'into', 'like', 'near', 'of',
-            'off', 'on', 'onto', 'out', 'outside', 'over', 'past', 'regarding',
+            'beyond', 'by', 'despite', 'down', 'during', 'except', 'for', 'from', 'in', 
+            'inside', 'into', 'like', 'near', 'of', 'off', 'on', 'onto', 'out', 'outside', 'over', 'past',
             'round', 'since', 'through', 'throughout', 'to', 'toward', 'towards',
             'under', 'underneath', 'until', 'unto', 'up', 'upon', 'with', 'within', 'without'
         ];
         
         const indefiniteArticles = ['a', 'an'];
         
-        // Count occurrences
         const pronounCount = countOccurrences(words, pronouns);
         const prepositionCount = countOccurrences(words, prepositions);
         const articleCount = countOccurrences(words, indefiniteArticles);
         
-        // Display results
         displayCounts('pronouns-list', pronounCount);
         displayCounts('prepositions-list', prepositionCount);
         displayCounts('articles-list', articleCount);
@@ -225,7 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Filter out words with zero occurrences
         return Object.fromEntries(
             Object.entries(counts).filter(([_, count]) => count > 0)
         );
@@ -249,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         Object.entries(counts)
-            .sort((a, b) => b[1] - a[1]) // Sort by count (descending)
+            .sort((a, b) => b[1] - a[1])
             .forEach(([word, count]) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
