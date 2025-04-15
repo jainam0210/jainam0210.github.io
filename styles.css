@@ -88,7 +88,7 @@ ul {
 
 /* Header Styles */
 header {
-    background-color: #111111;
+    background-color: rgba(0, 0, 0, 0.5);
     box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
     padding: 1.5rem 2rem;
     position: sticky;
@@ -142,7 +142,7 @@ main {
 
 .section {
     margin-bottom: 4rem;
-    background-color: rgba(17, 17, 17, 0.7); /* Changed from 0.85 to 0.7 for more transparency */
+    background-color: rgba(17, 17, 17, 0.3); /* Changed from 0.85 to 0.7 for more transparency */
     border-radius: 8px;
     padding: 2rem;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
@@ -538,7 +538,7 @@ main {
 
 /* Footer */
 footer {
-    background-color: #111111;
+    background-color: rgba(0, 0, 0, 0.5);
     color: #cccccc;
     text-align: center;
     padding: 1.5rem;
