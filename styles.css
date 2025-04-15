@@ -145,7 +145,7 @@ main {
     background-color: rgba(17, 17, 17, 0.3); /* Changed from 0.85 to 0.7 for more transparency */
     border-radius: 8px;
     padding: 2rem;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
     position: relative; /* Ensure proper stacking */
     z-index: 1; /* Same as main content */
 }
