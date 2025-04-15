@@ -112,14 +112,57 @@ document.addEventListener('DOMContentLoaded', function() {
         analyzeBtn.addEventListener('click', analyzeText);
     }
 
+    // Store the original text input
+    let originalTextContent = "";
+    // Keep track of currently highlighted word
+    let currentHighlightedWord = "";
+
     function analyzeText() {
         const text = document.getElementById('text-input').value;
+        originalTextContent = text;
         
         displayBasicStats(text);
         
         countPronounsPrepositionsArticles(text);
         
         document.querySelector('.analysis-results').classList.add('visible');
+
+        // Create a display area for the highlighted text
+        if (!document.getElementById('highlighted-text-display')) {
+            createHighlightedTextDisplay();
+        }
+
+        // Show the original text in the display area
+        document.getElementById('highlighted-text-content').innerHTML = formatTextForDisplay(text);
+    }
+
+    function createHighlightedTextDisplay() {
+        const displayContainer = document.createElement('div');
+        displayContainer.id = 'highlighted-text-display';
+        displayContainer.className = 'result-section';
+        
+        const title = document.createElement('h3');
+        title.textContent = 'Text Display';
+        
+        const clearButton = document.createElement('button');
+        clearButton.id = 'clear-highlight-btn';
+        clearButton.textContent = 'Clear Highlights';
+        clearButton.addEventListener('click', clearHighlights);
+        
+        const textContent = document.createElement('div');
+        textContent.id = 'highlighted-text-content';
+        textContent.className = 'text-content-display';
+        
+        displayContainer.appendChild(title);
+        displayContainer.appendChild(clearButton);
+        displayContainer.appendChild(textContent);
+        
+        document.querySelector('.analysis-results').appendChild(displayContainer);
+    }
+
+    function formatTextForDisplay(text) {
+        // Replace newlines with <br> tags and maintain spacing
+        return text.replace(/\n/g, '<br>').replace(/\s\s/g, '&nbsp;&nbsp;');
     }
 
     function displayBasicStats(text) {
@@ -171,9 +214,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const prepositionCount = countOccurrences(words, prepositions);
         const articleCount = countOccurrences(words, indefiniteArticles);
         
-        displayCounts('pronouns-list', pronounCount);
-        displayCounts('prepositions-list', prepositionCount);
-        displayCounts('articles-list', articleCount);
+        displayCounts('pronouns-list', pronounCount, 'pronoun');
+        displayCounts('prepositions-list', prepositionCount, 'preposition');
+        displayCounts('articles-list', articleCount, 'article');
     }
 
     function countOccurrences(words, targetWords) {
@@ -194,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
         );
     }
 
-    function displayCounts(elementId, counts) {
+    function displayCounts(elementId, counts, wordType) {
         const container = document.getElementById(elementId);
         container.innerHTML = '';
         
@@ -215,13 +258,66 @@ document.addEventListener('DOMContentLoaded', function() {
             .sort((a, b) => b[1] - a[1])
             .forEach(([word, count]) => {
                 const row = document.createElement('tr');
+                row.classList.add('word-row');
+                row.dataset.word = word;
+                row.dataset.type = wordType;
                 row.innerHTML = `
                     <td>${word}</td>
                     <td>${count}</td>
                 `;
+                
+                row.addEventListener('click', function() {
+                    const wordToHighlight = this.dataset.word;
+                    highlightWord(wordToHighlight);
+                });
+                
                 table.appendChild(row);
             });
         
         container.appendChild(table);
+    }
+
+    function highlightWord(word) {
+        if (currentHighlightedWord === word) {
+            clearHighlights();
+            return;
+        }
+
+        currentHighlightedWord = word;
+        
+        const textDisplay = document.getElementById('highlighted-text-content');
+        if (!textDisplay) return;
+        
+        const regex = new RegExp(`\\b${word}\\b`, 'gi');
+        
+        const highlightedText = originalTextContent.replace(regex, 
+            match => `<span class="highlighted-word">${match}</span>`);
+        
+        textDisplay.innerHTML = formatTextForDisplay(highlightedText);
+        
+        const firstHighlight = textDisplay.querySelector('.highlighted-word');
+        if (firstHighlight) {
+            firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        document.querySelectorAll('.word-row').forEach(row => {
+            row.classList.remove('active-word');
+            if (row.dataset.word === word) {
+                row.classList.add('active-word');
+            }
+        });
+    }
+
+    function clearHighlights() {
+        currentHighlightedWord = "";
+        
+        const textDisplay = document.getElementById('highlighted-text-content');
+        if (textDisplay) {
+            textDisplay.innerHTML = formatTextForDisplay(originalTextContent);
+        }
+        
+        document.querySelectorAll('.word-row').forEach(row => {
+            row.classList.remove('active-word');
+        });
     }
 });
