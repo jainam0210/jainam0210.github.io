@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+</head>
+<body>
+<a-scene>
+<!-- The existing plane -->
+<a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+
+<!-- First shape: Box at the bottom -->
+<a-box position="0 0.5 -4"
+width="1.2" height="1" depth="1.2"
+color="#4CC3D9"></a-box>
+<!-- Second shape: Torus-->
+<a-torus position="0 1.2 -4"
+radius="0.4" 
+radius-tubular="0.1"
+rotation="90 0 0"
+color="#FF5733"></a-torus>
+<!-- Third shape: Cone -->
+<a-cone position="0 1.92 -4"
+radius-bottom="0.6" radius-top="0"
+height="1"
+color="#FFCE30"></a-cone>
+<a-sky color="#ECECEC"></a-sky>
+</a-scene>
+</body>
+</html>
